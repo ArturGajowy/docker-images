@@ -3,5 +3,5 @@ dist: trusty
 services: 
   - docker
 
-install: make
+install: make build
 script: echo "That's all, folks!"
