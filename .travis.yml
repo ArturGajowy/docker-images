@@ -1,6 +1,5 @@
 language: generic
 services: docker
 dist: trusty
-
 install: make
 script: echo "That's all, folks!"
