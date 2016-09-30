@@ -4,5 +4,5 @@ services:
   - docker
 
 before_install: sudo apt-get install dc
-install: make build
+install: make
 script: echo "That's all, folks!"
