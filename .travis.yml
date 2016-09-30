@@ -3,6 +3,8 @@ dist: trusty
 services: 
   - docker
 
-before_install: sudo apt-get install dc
+before_install: 
+  - sudo apt-get install dc
+  - ls teradatalabs/ | awk '{print "teradatalabs/" $0 }' | xargs -L1 time docker pull
 install: make
 script: echo "That's all, folks!"
