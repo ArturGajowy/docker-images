@@ -1,10 +1,23 @@
 language: generic
 dist: trusty
+
 services: 
   - docker
 
-before_install: 
+before_install:
+  # make docker run on a ramdisk
+  - sudo rm /etc/default/docker
+  - mkdir /tmp/docker
+  - free -m
+  - sudo mount -t tmpfs -o size=6G tmpfs /tmp/docker
+  - echo "DOCKER_OPTS=\"-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -g /tmp/docker\"" | sudo tee /etc/default/docker > /dev/null
+  - sudo restart docker
+  # install build requirements
   - sudo apt-get install dc
-  - ls teradatalabs/ | awk '{print "teradatalabs/" $0 }' | xargs -L1 time docker pull || true
-install: make
-script: echo "That's all, folks!"
+  - sudo pip install docker-release
+  - docker-release --version
+  - free -m
+  # prime the cache by fetching the latest release of all images
+  # - ls teradatalabs/ | awk '{print "teradatalabs/" $0 }' | xargs -L1 time docker pull || true
+
+install: travis_wait 45 make
