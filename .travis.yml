@@ -9,7 +9,18 @@ before_install:
   - sudo rm /etc/default/docker
   - mkdir /tmp/docker
   - free -m
-  - sudo mount -t tmpfs -o size=6G tmpfs /tmp/docker
+  - df -h
+  # add swap space so that we can exceed the ram with our ramdisk
+  - sudo fallocate -l 16G /tmp/swapfile
+  - sudo chmod 600 /tmp/swapfile
+  - sudo mkswap /tmp/swapfile
+  - sudo swapon /tmp/swapfile
+  - sudo swapon -s
+  - free -m
+  - sudo sysctl vm.swappiness=10
+  - sudo sysctl vm.vfs_cache_pressure=50
+  # mount the ramdisk
+  - sudo mount -t tmpfs -o size=20G tmpfs /tmp/docker
   - echo "DOCKER_OPTS=\"-H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -g /tmp/docker\"" | sudo tee /etc/default/docker > /dev/null
   - sudo restart docker
   # install build requirements
