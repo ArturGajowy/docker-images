@@ -15,6 +15,11 @@
 FROM teradatalabs/cdh5-hive
 MAINTAINER Teradata Docker Team <docker@teradata.com>
 
+# MAKE /dev/random FAST, ALBEIT NOT THAT RANDOM
+# otherwise the image building hangs in VMs, especially @ Travis
+# specifically, it hangs at `kdb5_util create -s` below
+RUN ln -sf /dev/urandom /dev/random
+
 # INSTALL KERBEROS
 RUN yum install -y krb5-libs krb5-server krb5-workstation
 
